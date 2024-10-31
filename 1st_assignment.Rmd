@@ -1,7 +1,7 @@
 ---
 title: "第一次作业你的报告题目"
 CJKmainfont: Songti SC
-author: "your name"
+author: "chenfan"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
@@ -28,6 +28,8 @@ library(scales)
 library(plotly)
 library(patchwork)
 library(ggrepel)
+library(wordcloud2)
+library(FREQ)
 ```
 
 # 你的主要发现
@@ -53,8 +55,8 @@ library(ggrepel)
     
 ```{r}
 # 载入数据和预处理
-
-lj<- read_csv("/Users/jameschen/Documents/02_Teaching/12_quantitative_thinking_R/data/2023-09-12_cleaned.csv")
+#lj<- read_csv("/Users/jameschen/Documents/02_Teaching/12_quantitative_thinking_R/data/2023-09-12_cleaned.csv")
+lj<- read_csv("data/2023-09-12_cleaned.csv")
 # EDA ---------------------------------------------------------------------
 
 ## 如下语句可以解决画图中的中文显示问题，当然你可以用showtext包来解决
@@ -96,59 +98,324 @@ summary(lj)
 
 # 探索性分析
 
+数值描述：
+
+    均值（Mean）：所有数值的总和除以数值的数量。
+    中位数（Median）：将一组数值按大小顺序排列后位于中间的数值。
+    众数（Mode）：一组数据中出现次数最多的数值。
+    方差（Variance）：衡量数据点与均值之间差异的平方的平均值。
+    标准差（Standard Deviation）：方差的平方根，衡量数据的离散程度。
+    极差（Range）：数据中最大值与最小值的差。
+    四分位数（Quartiles）：将数据分为四等分，每部分包含25%的数据点。
+    百分位数（Percentiles）：数据中低于某个百分比的数值点。
+
+图形：
+
+    直方图（Histogram）：显示数据分布的图形，通常用于连续变量。
+    箱线图（Boxplot）：显示数据的中位数、四分位数和异常值的图形。
+    散点图（Scatter Plot）：显示两个变量之间关系的图形。
+    折线图（Line Chart）：显示数据随时间变化的图形。
+    条形图（Bar Chart）：显示不同类别之间比较的图形。
+    饼图（Pie Chart）：显示各部分占整体比例的图形。
+    热力图（Heatmap）：显示数据点密度的图形，通常用于展示两个变量之间的关系。
+```{r}
+cf_show_data<-function(data){
+  print(summary(data))
+  freq_table <- sort(table(data), decreasing = TRUE)
+  wordcloud2(freq_table,size =0.65)
+}
+```
+
+```{r}
+cf_show_data1 <- function(data){
+  print(summary(data))
+  hist(data)
+}
+
+```
+
+```{r}
+
+```
+
 ## 变量1的数值描述与图形
+```{r}
+#summary(lj$property_name)
+#freq_table <- sort(table(lj$property_name), decreasing = TRUE)
+#wordcloud2(freq_table,size =0.65)
+cf_show_data(lj$property_name)
+
+```
+
 
 发现：
 
 - 发现1
+  “东立国际”以最高的评量22位于榜首，这可能表明该小区在某些评价标准上表现突出，
 
 - 发现2
-
+  多个小区的数量相同，例如“保利中央公馆”、“朗诗里程”都有16的评分，这可能意味着这些小区在评价标准上表现相似，或者在居民中的口碑相近。
+  
 ## 变量2的数值描述与图形
+```{r}
+cf_show_data(lj$property_region)
+```
+
 
 发现：
 
 - 发现1
+    白沙洲的房子数量最多
 
 - 发现2
+    后湖、四新、金银湖等离核心城区有点距离的占比较高
 
-## 变量...的数值描述与图形
+## 变量price_ttl的数值描述与图形
+```{r}
+cf_show_data1(lj$price_ttl)
+```
 
 发现：
 
 - 发现1
+    总价在200万元内的房子数量最多
 
 - 发现2
+    房屋最高价格能到1380w
+## 变量price_sqm的数值描述与图形
+```{r}
+cf_show_data1(lj$price_sqm)
+```
 
-## 探索问题1
 
 发现：
 
-- 发现1
+- 发现1 单价在10000至20000之间最多
 
-- 发现2
+- 发现2 正态房屋单价类似正态分布
+## 变量bedrooms的数值描述与图形
+```{r}
+cf_show_data1(lj$bedrooms)
+```
 
-## 探索问题2
-
-发现：
-
-- 发现1
-
-- 发现2
-
-## 探索问题3
 
 发现：
 
-- 发现1
+- 发现1  房间分布占比最多的为3间
 
-- 发现2
+- 发现2 多数房间数量在5以下
+## 变量livingrooms的数值描述与图形
+```{r}
+cf_show_data1(lj$livingrooms)
+```
+
+
+发现：
+
+- 发现1 大部分客厅数在1或者2之间
+
+- 发现2 客厅数最大为4间
+## 变量building_area的数值描述与图形
+```{r}
+cf_show_data1(lj$building_area)
+```
+
+
+发现：
+
+- 发现1 房屋面积主要分布在50至150之间
+
+- 发现2 最小的房屋面积仅22平方米
+
+## 变量directions1的数值描述与图形
+```{r}
+cf_show_data(lj$directions1)
+```
+
+
+发现：
+
+- 发现1 房屋主要朝向南方
+
+- 发现2 房屋其次朝向东南
+## 变量directions2的数值描述与图形
+```{r}
+cf_show_data(lj$directions2)
+```
+
+
+发现：
+
+- 发现1 房屋次要朝向北方
+
+- 发现2 房屋次要朝向其次朝向南方
+## 变量decoration的数值描述与图形
+```{r}
+cf_show_data(lj$decoration)
+```
+
+
+发现：
+
+- 发现1 房屋装修分为精装、简装、毛坯、其他
+
+- 发现2 房屋装修以精装为主
+## 变量property_t_height的数值描述与图形
+```{r}
+cf_show_data1(lj$property_t_height)
+```
+
+
+发现：
+
+- 发现1 楼栋总层数在30-35之间最多，其次为5-10
+
+- 发现2 楼栋总层数在5以下或35以上数量较少
+## 变量property_height的数值描述与图形
+```{r}
+cf_show_data(lj$property_height)
+```
+
+
+发现：
+
+- 发现1 房屋在所在楼栋所处位置，取值为高中低
+
+- 发现2 房屋在中层最多
+## 变量property_style的数值描述与图形
+```{r}
+cf_show_data(lj$property_style)
+```
+
+
+发现：
+
+- 发现1 建筑形式有板楼、塔楼、板塔结合和暂无数据
+
+- 发现2 板楼数量最多
+## 变量followers的数值描述与图形
+```{r}
+cf_show_data1(lj$followers)
+```
+
+
+发现：
+
+- 发现1 一半以上房屋的关注人数在3以下
+
+- 发现2 少量房屋关注人数能超过20，最高能达到262
+## 变量near_subway的数值描述与图形
+```{r}
+cf_show_data(lj$near_subway)
+```
+
+
+发现：
+
+- 发现1 是否靠近地铁仅有一个近地铁值出现，其余为空值
+
+- 发现2 近地铁房屋有1554个
+## 变量if_2y的数值描述与图形
+```{r}
+#cf_show_data(lj$if_2y)
+print(summary(lj$if_2y))
+freq_table <- table(lj$if_2y)
+freq_table
+wordcloud2(freq_table,size =0.65)
+```
+
+
+发现：
+
+- 发现1 产证是否满2年仅有一个房本满两年 出现，其余为空值
+
+- 发现2 房本满两年 房屋有1264个
+## 变量has_key的数值描述与图形
+```{r}
+cf_show_data(lj$has_key)
+```
+
+
+发现：
+
+- 发现1 中介有钥匙房屋2525个
+
+- 发现2 超过80%房屋有钥匙
+## 变量vr的数值描述与图形
+```{r}
+print(summary(lj$vr))
+freq_table <- table(lj$vr)
+freq_table
+hist(freq_table)
+#wordcloud2(freq_table,size =0.65)
+```
+
+
+发现：
+
+- 发现1 是否支持VR看房 存在一些无效数据
+
+- 发现2 2084支持VR看房
+
+## 探索问题1 房屋单价与房屋在所在楼栋所处位置的关系
+```{r}
+ggplot(data =lj,aes(x=property_height,y=price_sqm))+
+  geom_boxplot(width = 0.8, alpha = 0.5)
+```
+
+
+发现：
+
+- 发现1 房屋位于低层的情况下，平均单价最高
+
+- 发现2 房屋位于低层的情况下，价格范围最集中
+
+## 探索问题2 房屋单价与所处区域的关系
+```{r}
+mean_price <- lj%>%
+  group_by(property_region)%>%
+  summarise(num = n(),mean_price = mean(price_sqm))%>%
+  arrange(desc(mean_price))
+print(mean_price)
+hist(mean_price$mean_price)
+ggplot(data =mean_price,aes(x=property_region,y=mean_price))+
+  geom_point()
+```
+
+
+发现：
+
+- 发现1 中北路、水果湖、黄埔永清、三阳路等核心城区平均房屋单价最高，普遍能超过2w
+
+- 发现2 全部区域的平均房屋价格在15000到20000之间最多
+
+## 探索问题3  房屋主要朝向和房屋单价之间的关系
+```{r}
+#ggplot(data =lj,aes(x=building_area,y=price_sqm))+
+#  geom_point() +
+#  geom_smooth(formula = y ~ x,method = "glm", se = FALSE)
+mean_price <- lj%>%
+  group_by(directions1)%>%
+  summarise(num = n(),mean_price = mean(price_sqm))%>%
+  arrange(desc(mean_price))
+print(mean_price)
+ggplot(data =lj,aes(x=directions1,y=price_sqm))+
+  geom_boxplot(width = 0.8, alpha = 0.5)
+```
+
+发现：
+
+- 发现1 房屋朝南的最多，朝南房屋单平米均价15170.30。在整体朝向和价格分析中并不是最高的，但朝南的房屋有很多大的离群点。
+
+- 发现2 价格最集中的为朝向西北的房屋
 
 ---
 
 # 发现总结
 
 用1-3段话总结你的发现。
-
+    中北路、水果湖、黄埔永清、三阳路等核心城区平均房屋单价最高，普遍能超过2w，后湖、四新、金银湖等离核心城区有点距离的出售房子套数最多。
+    楼栋总层数在30-35之间最多，其次为5-10。房屋位于低层的情况下，平均单价最高且价格范围最集中。
+    房屋朝南的最多，朝南房屋单平米均价15170.30。在整体朝向和价格分析中并不是最高的，但朝南的房屋有很多大的离群点。
 
 
